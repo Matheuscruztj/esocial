@@ -24,7 +24,7 @@ public class CodigoRespostaServicoTest {
 
 	@Autowired
 	CodigoRespostaServico codigoRespostaServico;
-	
+
 	@Test
 	@DataSet(executeScriptsBefore = "cleanup.sql")
 	public void deveRetornarCodigoRespostaExistenteParaLote() {
@@ -54,21 +54,27 @@ public class CodigoRespostaServicoTest {
 	@Test
 	@DataSet(executeScriptsBefore = "cleanup.sql")
 	public void deveRetornarUmCodigoRespostaExistente() {
-		CodigoResposta codigoResposta = new CodigoResposta(1, 201l, "Sucesso");
-		codigoResposta = codigoRespostaServico.obterCodigoResposta(codigoResposta);
+		SoftAssertions.assertSoftly(softly -> {
+			CodigoResposta codigoResposta = new CodigoResposta(1, 201l, "Sucesso");
+			codigoResposta = codigoRespostaServico.obterCodigoResposta(codigoResposta);
+	
+			assertNotNull(codigoResposta);
 
-		assertNotNull(codigoResposta);
-		assertThat(codigoResposta).extracting("codResposta").contains(201l);
+			softly.assertThat(codigoResposta).extracting("codResposta").asList().contains(201l);
+		});
 	}
 
 	@Test
 	@DataSet(executeScriptsBefore = "cleanup.sql")
 	public void deveGravarUmCodigoRespostaNãoExistente() {
-		CodigoResposta codigoResposta = new CodigoResposta(2, 601l, "TESTE");
-		codigoResposta = codigoRespostaServico.obterCodigoResposta(codigoResposta);
+		SoftAssertions.assertSoftly(softly -> {
+			CodigoResposta codigoResposta = new CodigoResposta(2, 601l, "TESTE");
+			codigoResposta = codigoRespostaServico.obterCodigoResposta(codigoResposta);
 
-		assertNotNull(codigoResposta);
-		assertThat(codigoResposta).extracting("codResposta").contains(601l);
+			assertNotNull(codigoResposta);
+
+			softly.assertThat(codigoResposta).extracting("codResposta").asList().contains(601l);
+		});
 	}
 
 	@Test
